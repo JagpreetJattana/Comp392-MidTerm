@@ -248,7 +248,7 @@ var cube5: Mesh;
         camera.position.y = 50;
         camera.position.z = -40;
         camera.rotation.set(-1.10305, 0.49742, -0.1396);
-      //  camera.lookAt(new Vector3(0, 0, 0));
+     
       camera.lookAt(scene.position);
         console.log("Finished setting up Camera...");
     }
