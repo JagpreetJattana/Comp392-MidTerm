@@ -43,7 +43,7 @@ var game = (() => {
     var stats: Stats;
     var axes: AxisHelper;
     var plane: Mesh;
-    
+    var ambientLight: AmbientLight;
     var spotLight: SpotLight;
     
     var cubeGeometry: CubeGeometry;
@@ -84,22 +84,42 @@ var cube5: Mesh;
     scene.add(axes);
     
      //Add a Plane to the Scene
-	planeGeometry = new PlaneGeometry(60, 60);
-    color.setRGB( Math.random(), 0, 0 );
-	planeMaterial = new LambertMaterial({color:color.setRGB( Math.random(), 0, 0 ), opacity: 0.5});
-	plane = new Mesh(planeGeometry, planeMaterial);
+      var texture2 = THREE.ImageUtils.loadTexture('Scripts/texture/floor.jpg');
+    var material2 = new THREE.MeshPhongMaterial({
+        map: texture,
+        bumpMap: texture,
+        bumpScale: 0.05,
+
+    });
+	planeGeometry = new PlaneGeometry(35, 35);
+	planeMaterial = new LambertMaterial({color:0x0033CC, opacity: 0.5});
+	plane = new Mesh(planeGeometry, material2);
 	plane.receiveShadow = true;
 	
 	plane.rotation.x = -0.5 * Math.PI;
-	//plane.position.y = -12.5;
+//	plane.position.y = -12.5;
 	
 	scene.add(plane);
     
+    // Add an AmbientLight to the scene
+    ambientLight = new AmbientLight(0x090909);
+    scene.add(ambientLight);
+    console.log("Added an Ambient Light to Scene");
+    
        //Adding cube 1
+       
+        THREE.ImageUtils.crossOrigin = 'anonymous';
+    var texture = THREE.ImageUtils.loadTexture('Scripts/texture/crate.jpg');
+    var material = new THREE.MeshPhongMaterial({
+        map: texture,
+        bumpMap: texture,
+        bumpScale: 0.05,
+
+    });
 	cubeGeometry = new CubeGeometry(8, 4, 8);
     
 	cubeMaterial = new LambertMaterial({color:0x00ff00, opacity:0.5});
-	cube1 = new Mesh(cubeGeometry, cubeMaterial);
+	cube1 = new Mesh(cubeGeometry, material);
 	cube1.castShadow = true;
     cube1.position.x=0;  
    cube1.position.y=1;
@@ -109,7 +129,7 @@ var cube5: Mesh;
         //Add cube 2
 	cubeGeometry = new CubeGeometry(7, 4, 7);
 	cubeMaterial = new LambertMaterial({color:0x00ff00, opacity:0.5});
-	cube2 = new Mesh(cubeGeometry, cubeMaterial);
+	cube2 = new Mesh(cubeGeometry, material);
 	cube2.castShadow = true;
     cube2.position.x=0;  
    cube2.position.y=5;
@@ -120,7 +140,7 @@ var cube5: Mesh;
         //Add Cube 3
 	cubeGeometry = new CubeGeometry(6, 4, 6);
 	cubeMaterial = new LambertMaterial({color:0x00ff00, opacity:0.5});
-	cube3 = new Mesh(cubeGeometry, cubeMaterial);
+	cube3 = new Mesh(cubeGeometry, material);
 	cube3.castShadow = true;
     cube3.position.x=0;  
    cube3.position.y=9;
@@ -131,7 +151,7 @@ var cube5: Mesh;
         //Add Cube 4
 	cubeGeometry = new CubeGeometry(5, 4, 5);
 	cubeMaterial = new LambertMaterial({color:0x00ff00, opacity:0.5});
-	cube4 = new Mesh(cubeGeometry, cubeMaterial);
+	cube4 = new Mesh(cubeGeometry, material);
 	cube4.castShadow = true;
     cube4.position.x=0;  
    cube4.position.y=13;
@@ -142,7 +162,7 @@ var cube5: Mesh;
         //Add Cube 5
 	cubeGeometry = new CubeGeometry(3, 4, 3);
 	cubeMaterial = new LambertMaterial({color:0x00ff00, opacity:0.5});
-	cube5 = new Mesh(cubeGeometry, cubeMaterial);
+	cube5 = new Mesh(cubeGeometry, material);
 	cube5.castShadow = true;
     cube5.position.x=0;  
    cube5.position.y=17;
@@ -154,6 +174,10 @@ var cube5: Mesh;
 	spotLight.position.set (21, 70, 19);
     spotLight.lookAt(new Vector3(0, 0, 0));
     spotLight.castShadow = true;
+  //  spotLight.angle = 10 * (Math.PI / 180);
+  //  spotLight.distance = 50;
+  //  spotLight.intensity = 2;
+  //  spotLight.shadowCameraNear=1;
 	scene.add(spotLight);
 	console.log("Added Spot Light to Scene");
     
@@ -173,11 +197,11 @@ var cube5: Mesh;
 
     function addControl(controlObject: Control): void {
         /* ENTER CODE for the GUI CONTROL HERE */
-        gui.add(controlObject, 'Cube1rotation',-0.01,0.01);
-        gui.add(controlObject, 'Cube2rotation',-0.01,0.01);
-        gui.add(controlObject, 'Cube3rotation',-0.01,0.01);
-        gui.add(controlObject, 'Cube4rotation',-0.01,0.01);
-        gui.add(controlObject, 'Cube5rotation',-0.01,0.01);
+        gui.add(controlObject, 'Cube1rotation',-0.05,0.05);
+        gui.add(controlObject, 'Cube2rotation',-0.05,0.05);
+        gui.add(controlObject, 'Cube3rotation',-0.05,0.05);
+        gui.add(controlObject, 'Cube4rotation',-0.05,0.05);
+        gui.add(controlObject, 'Cube5rotation',-0.05,0.05);
         
     }
 
@@ -220,11 +244,12 @@ var cube5: Mesh;
     // Setup main camera for the scene
     function setupCamera(): void {
         camera = new PerspectiveCamera(35, config.Screen.RATIO, 0.1, 100);
-        camera.position.x = 70;
+        camera.position.x = 40;
         camera.position.y = 50;
         camera.position.z = -40;
         camera.rotation.set(-1.10305, 0.49742, -0.1396);
-        camera.lookAt(new Vector3(0, 0, 0));
+      //  camera.lookAt(new Vector3(0, 0, 0));
+      camera.lookAt(scene.position);
         console.log("Finished setting up Camera...");
     }
 
